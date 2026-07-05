@@ -312,4 +312,9 @@ GroupMate is an independent project. These links are design references, not an e
 
 ## License
 
-MIT
+MIT.
+
+Commercial use and derivative works are allowed. When redistributing GroupMate
+or substantial portions of it, including modified versions, retain the copyright
+notice and license text as required by the MIT License. See [NOTICE](NOTICE) for
+the original project attribution.
