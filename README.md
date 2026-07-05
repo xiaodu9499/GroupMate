@@ -1,5 +1,7 @@
 # GroupMate
 
+English | [简体中文](README.zh-CN.md)
+
 GroupMate is a local-first channel agent runtime for enterprise work chats.
 
 It connects chat platform CLIs and bot APIs to local coding-agent executors such as Codex CLI, Claude Code CLI, and Cursor CLI. It keeps each group chat as a channel-scoped workspace, understands ongoing human discussion, and runs an agent only when the channel explicitly needs help.
