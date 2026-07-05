@@ -3,6 +3,21 @@
   "version": "0.1.0",
   "description": "Local-first channel agent runtime for enterprise chats.",
   "type": "module",
+  "homepage": "https://github.com/xiaodu9499/GroupMate#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaodu9499/GroupMate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiaodu9499/GroupMate/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "NOTICE"
+  ],
   "bin": {
     "groupmate": "./dist/cli.js"
   },
@@ -23,7 +38,7 @@
     "claude-code",
     "cursor"
   ],
-  "author": "",
+  "author": "xiaodu9499",
   "license": "MIT",
   "engines": {
     "node": ">=20"
