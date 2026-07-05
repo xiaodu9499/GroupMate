@@ -303,9 +303,12 @@ GroupMate can:
 
 GroupMate is inspired by:
 
-- Claude Tag-style channel-scoped agents;
-- OpenTag-style local executor dispatch;
+- Claude Tag-style channel-scoped agents, especially the channel memory model explored by [open-claude-tag](https://github.com/Anil-matcha/open-claude-tag);
+- OpenTag-style local executor dispatch, especially the adapter / dispatcher / runner split in [amplifthq/opentag](https://github.com/amplifthq/opentag);
+- multi-platform bot and confirmation-flow ideas from [CopilotKit/OpenTag](https://github.com/CopilotKit/OpenTag);
 - enterprise work chats where most useful context already lives.
+
+GroupMate is an independent project. These links are design references, not an endorsement, affiliation, or compatibility guarantee.
 
 ## License
 

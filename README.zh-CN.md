@@ -298,9 +298,12 @@ GroupMate 可以：
 
 GroupMate 受到以下设计启发：
 
-- Claude Tag 风格的频道级 Agent；
-- OpenTag 风格的本地执行器调度；
+- Claude Tag 风格的频道级 Agent，特别是 [open-claude-tag](https://github.com/Anil-matcha/open-claude-tag) 中的群 / 频道记忆模型；
+- OpenTag 风格的本地执行器调度，特别是 [amplifthq/opentag](https://github.com/amplifthq/opentag) 中 adapter / dispatcher / runner 的分层设计；
+- [CopilotKit/OpenTag](https://github.com/CopilotKit/OpenTag) 中多平台 bot 和确认流程的设计思路；
 - 企业工作群里已经存在的大量真实上下文。
+
+GroupMate 是独立项目。以上链接仅作为设计参考，不代表从属关系、官方背书或兼容性承诺。
 
 ## License
 
