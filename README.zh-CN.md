@@ -311,22 +311,27 @@ MIT。
 
 允许商业使用和二次开发。重新分发 GroupMate 或其重要组成部分时，包括修改版本，请按照 MIT License 的要求保留版权声明和许可证文本。原项目来源说明见 [NOTICE](NOTICE)。
 
-## Quick Start（Milestone 1）
+## Quick Start（Milestone 2）
 
 ```bash
 npm install
 npm run build
+node dist/cli.js db migrate
 node dist/cli.js doctor
 node dist/cli.js simulate --channel cid-test --sender user-1 --sender-name Alice --text "帮我总结一下当前问题"
+node dist/cli.js runs list --channel cid-test
+node dist/cli.js messages recent --channel cid-test
 node dist/cli.js codex-smoke "只回复 ok"
 ```
 
-DingTalk one-shot：
+DingTalk 同步与 one-shot：
 
 ```powershell
 $env:GROUPMATE_DINGTALK_GROUP_ID="cid..."
 $env:GROUPMATE_DINGTALK_BOT_NAME="ducf_agent"
+node dist/cli.js dingtalk-sync --group "cid..."
 node dist/cli.js dingtalk-custom "开始查 告诉我结果"
 ```
 
+生产运行手册见 [docs/RUNBOOK-DINGTALK-CODEX.zh-CN.md](docs/RUNBOOK-DINGTALK-CODEX.zh-CN.md)。
 更多示例见 [examples/dingtalk-codex/README.zh-CN.md](examples/dingtalk-codex/README.zh-CN.md)。

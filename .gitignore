@@ -3,6 +3,8 @@ dist/
 .env
 .env.*
 data/
+data-test/
+.tmp-prod-verify*/
 logs/
 *.log
 .DS_Store

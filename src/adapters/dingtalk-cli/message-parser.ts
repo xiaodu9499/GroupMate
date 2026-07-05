@@ -20,11 +20,11 @@ export function normalizeText(text: string): string {
 
 export function normalizeDingTalkMessage(
   row: DingTalkRawMessage,
-  options: { workspaceId?: string } = {},
+  options: { workspaceId?: string; groupId?: string } = {},
 ): SourceMessage {
   const senderName = row.sender ?? "unknown";
   const senderId = row.senderOpenDingTalkId ?? senderName;
-  const channelId = row.openConversationId ?? "unknown";
+  const channelId = row.openConversationId ?? options.groupId ?? "unknown";
   const text = row.content ?? "";
 
   return {

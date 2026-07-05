@@ -19,7 +19,7 @@ export class ChannelWorkspace {
     this.botName = options.botName;
   }
 
-  async buildContext(channel: ChannelRef, options: { botName?: string } = {}): Promise<ChannelContext> {
+  async buildContext(channel: ChannelRef, _options: { botName?: string } = {}): Promise<ChannelContext> {
     const dir = await this.ensureChannelDir(channel);
     await mkdir(path.join(dir, "runs"), { recursive: true });
 
@@ -30,7 +30,7 @@ export class ChannelWorkspace {
       channel,
       channelProfile,
       memory,
-      recentMessages: await this.readRecentMessages(channel, options.botName ?? this.botName),
+      recentMessages: [],
     };
   }
 

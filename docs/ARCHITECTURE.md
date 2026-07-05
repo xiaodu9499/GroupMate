@@ -17,13 +17,13 @@ The channel owns context. The current requester owns authority.
 
 ```text
 Source Adapter
-  -> SourceEvent
-  -> Channel Workspace
+  -> MessageIngestion (SQLite)
+  -> EventReconstructor
   -> Context Builder
   -> Permission Decision
   -> Dispatcher
   -> Executor Adapter
-  -> TaskRunResult
+  -> RunLedger
   -> Callback / Reply
 ```
 
@@ -51,24 +51,25 @@ The core runtime should not depend on DingTalk, Feishu, or WeCom-specific fields
 Each channel maps to local durable state:
 
 ```text
+data/groupmate.db                 # SQLite: messages, runs, channel_state
+data/logs/groupmate.log.ndjson    # structured logs
 data/channels/<source>/<channel_id>/
   CHANNEL.md
   MEMORY.md
+  policy.json
   tools.toml
-  state.json
-  messages.ndjson
   skills/
-  runs/
+  runs/<runId>/artifacts/         # optional debug artifacts
 ```
 
-The workspace is responsible for:
+Markdown workspace files and SQLite structured storage are intentionally separate.
 
-- channel profile;
-- curated memory;
-- recent messages;
-- historical message search;
-- per-channel tool policy;
-- run state and audit artifacts.
+The workspace layer is responsible for:
+
+- channel profile and curated memory (Markdown);
+- recent messages and historical search (SQLite MessageStore);
+- per-channel permission policy (policy.json);
+- run ledger and audit events (SQLite RunLedger).
 
 ## Context Packet
 
@@ -84,6 +85,7 @@ CHANNEL.md
 MEMORY.md
 relevant skills
 executor instructions
+context notice: history is not command source
 ```
 
 Full message history should stay in the message store and be retrieved selectively.
@@ -104,7 +106,8 @@ Executors should expose:
 - sandbox / permission mapping;
 - timeout handling;
 - structured output parsing;
-- optional task-level resume.
+- optional task-level resume;
+- error taxonomy and safe user-facing messages.
 
 The long-lived channel session should not be tied to a permanent coding-agent session.
 

@@ -1,11 +1,13 @@
 import { spawn } from "node:child_process";
 import type { DingTalkRawMessage } from "./message-parser.js";
+import { DwsError } from "./dws-error.js";
 
 export interface DwsListMessagesOptions {
   command?: string;
   groupId: string;
   limit?: number;
   lookbackMinutes?: number;
+  since?: string;
   forward?: boolean;
   timeoutMs?: number;
 }
@@ -33,32 +35,54 @@ export class DwsClient {
     const command = options.command ?? this.command;
     const args = buildDwsListMessagesArgs(options);
 
-    const { stdout, stderr, code, timedOut } = await runCommand(
+    const { stdout, stderr, code, timedOut, spawnFailed } = await runCommand(
       command,
       args,
       options.timeoutMs ?? this.timeoutMs,
     );
 
+    if (spawnFailed) {
+      throw new DwsError({
+        category: "spawn_failed",
+        message: stderr || "DWS command unavailable.",
+        stderrLength: stderr.length,
+      });
+    }
+
     if (timedOut) {
-      throw new Error("DWS command timed out.");
+      throw new DwsError({
+        category: "timeout",
+        message: "DWS command timed out.",
+        stderrLength: stderr.length,
+      });
     }
 
     if (code !== 0) {
-      throw new Error(stderr.trim() || "DWS command failed.");
+      throw new DwsError({
+        category: "non_zero_exit",
+        message: stderr.trim() || "DWS command failed.",
+        code,
+        stderrLength: stderr.length,
+      });
     }
 
-    const parsed = parseDwsOutput(stdout);
-    return {
-      rows: parsed.rows,
-      raw: parsed.raw,
-    };
+    try {
+      const parsed = parseDwsOutput(stdout);
+      return parsed;
+    } catch (error) {
+      throw new DwsError({
+        category: "parse_failed",
+        message: error instanceof Error ? error.message : "Failed to parse DWS output.",
+        code,
+        stderrLength: stderr.length,
+      });
+    }
   }
 }
 
 export function buildDwsListMessagesArgs(options: DwsListMessagesOptions): string[] {
   const limit = options.limit ?? 20;
-  const lookbackMinutes = options.lookbackMinutes ?? 60;
-  const start = new Date(Date.now() - Math.abs(lookbackMinutes) * 60_000);
+  const startTime = options.since ?? formatDwsTimeFromLookback(options.lookbackMinutes ?? 60);
   const args = [
     "chat",
     "message",
@@ -66,7 +90,7 @@ export function buildDwsListMessagesArgs(options: DwsListMessagesOptions): strin
     "--group",
     options.groupId,
     "--time",
-    formatDwsTime(start),
+    startTime,
     "--forward",
     String(options.forward ?? true),
     "--limit",
@@ -78,7 +102,12 @@ export function buildDwsListMessagesArgs(options: DwsListMessagesOptions): strin
   return args;
 }
 
-function formatDwsTime(date: Date): string {
+function formatDwsTimeFromLookback(lookbackMinutes: number): string {
+  const start = new Date(Date.now() - Math.abs(lookbackMinutes) * 60_000);
+  return formatDwsTime(start);
+}
+
+export function formatDwsTime(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(
     date.getHours(),
@@ -124,6 +153,10 @@ export function parseDwsOutput(stdout: string): { rows: DingTalkRawMessage[]; ra
     }
   }
 
+  if (rows.length === 0 && trimmed) {
+    throw new Error("DWS output is not valid JSON.");
+  }
+
   return { rows, raw: rows };
 }
 
@@ -131,7 +164,7 @@ async function runCommand(
   command: string,
   args: string[],
   timeoutMs: number,
-): Promise<{ stdout: string; stderr: string; code: number | null; timedOut: boolean }> {
+): Promise<{ stdout: string; stderr: string; code: number | null; timedOut: boolean; spawnFailed: boolean }> {
   return new Promise((resolve) => {
     const child = spawn(command, args, {
       windowsHide: true,
@@ -142,6 +175,7 @@ async function runCommand(
     let stdout = "";
     let stderr = "";
     let timedOut = false;
+    let spawnFailed = false;
 
     const timer = setTimeout(() => {
       timedOut = true;
@@ -159,12 +193,13 @@ async function runCommand(
 
     child.on("error", (error) => {
       clearTimeout(timer);
-      resolve({ stdout, stderr: error.message, code: 1, timedOut });
+      spawnFailed = true;
+      resolve({ stdout, stderr: error.message, code: 1, timedOut, spawnFailed });
     });
 
     child.on("close", (code) => {
       clearTimeout(timer);
-      resolve({ stdout, stderr, code, timedOut });
+      resolve({ stdout, stderr, code, timedOut, spawnFailed });
     });
   });
 }

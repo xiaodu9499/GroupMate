@@ -5,11 +5,13 @@ import path from "node:path";
 import { buildSimulatedEvent, createRuntime, runSimulatedDispatch } from "../../src/runtime.js";
 import type { ExecutorAdapter } from "../../src/core/executor.js";
 import { DEFAULT_CONFIG } from "../../src/core/config.js";
+import { resetStorageCache } from "../../src/storage/index.js";
 
 describe("simulate runtime", () => {
   let tempDir: string;
 
   afterEach(async () => {
+    resetStorageCache();
     if (tempDir) {
       await rm(tempDir, { recursive: true, force: true });
     }
@@ -47,5 +49,10 @@ describe("simulate runtime", () => {
     const result = await runSimulatedDispatch(runtime, event);
     expect(result.text).toContain("mock reply");
     expect(result.runId).toBeTruthy();
+
+    const runs = await runtime.storage.runLedger.listRuns(event.message.channel, { limit: 1 });
+    expect(runs).toHaveLength(1);
+
+    await runtime.storage.close();
   });
 });

@@ -29,7 +29,18 @@ The first version prioritizes CLI adapters because they are easier to run locall
 - easier stdout / stderr debugging;
 - consistent with local coding-agent executors.
 
-CLI adapters may have incomplete event metadata. In that case, the adapter should reconstruct missing fields by querying message history.
+CLI adapters may have incomplete event metadata. In that case, the adapter should:
+
+1. sync recent messages into SQLite via `dingtalk-sync` or inline fetch;
+2. reconstruct the current event from the latest batch and stored messages;
+3. fall back to an unknown actor when no match is found.
+
+Production commands:
+
+```bash
+groupmate dingtalk-sync --group <cid>
+groupmate dingtalk-custom [--force] "<text>"
+```
 
 ### Normalized Event Shape
 

@@ -41,6 +41,7 @@ export interface ChannelContext {
   memory?: string;
   recentMessages: SourceMessage[];
   relatedMessages?: SourceMessage[];
+  contextNotice?: string;
 }
 
 export interface PermissionDecision {

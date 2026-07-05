@@ -37,8 +37,11 @@ $env:GROUPMATE_WRITER_IDS=""
 
 ```bash
 npm run build
+node dist/cli.js db migrate
 node dist/cli.js doctor
 node dist/cli.js simulate --channel cid-test --sender user-1 --sender-name Alice --text "帮我总结一下当前问题"
+node dist/cli.js runs list --channel cid-test
+node dist/cli.js messages recent --channel cid-test
 ```
 
 如需跳过真实 Codex，可在测试环境设置：
@@ -54,12 +57,14 @@ node dist/cli.js simulate --text "hello"
 node dist/cli.js codex-smoke "只回复 ok"
 ```
 
-## DingTalk one-shot
+## DingTalk 同步与 one-shot
 
-`dws dev connect --channel custom` 会把用户消息文本传给子进程，GroupMate 会再拉最近群消息重建 sender 和 msgId：
+先同步群消息到 SQLite，再处理 custom 事件：
 
 ```bash
+node dist/cli.js dingtalk-sync --group "cid..." --limit 200
 node dist/cli.js dingtalk-custom "开始查 告诉我结果"
+node dist/cli.js dingtalk-custom --force "开始查 告诉我结果"
 ```
 
 stdout 只会输出最终回复文本。
@@ -93,14 +98,14 @@ node dist/cli.js simulate --config examples/groupmate.config.example.json --text
 
 ## 数据目录
 
-每个群会映射到：
-
 ```text
+data/groupmate.db
+data/logs/groupmate.log.ndjson
 data/channels/dingtalk/<base64url(channelId)>/
   CHANNEL.md
   MEMORY.md
-  messages.ndjson
+  policy.json
   runs/
 ```
 
-群聊历史只会作为上下文注入，不会当作系统指令。
+群聊历史只会作为上下文注入，不会当作系统指令。完整运行手册见 [docs/RUNBOOK-DINGTALK-CODEX.zh-CN.md](../../docs/RUNBOOK-DINGTALK-CODEX.zh-CN.md)。
