@@ -1,0 +1,21 @@
+[workspace]
+data_dir = "data"
+
+[source]
+type = "dingtalk-cli"
+command = "dws.cmd"
+
+[executor]
+type = "codex-cli"
+command = "codex.cmd"
+default_sandbox = "read-only"
+
+[permissions]
+owners = []
+writers = []
+default_mode = "ask"
+
+[execution]
+ask_sandbox = "read-only"
+write_sandbox = "workspace-write"
+dangerous_actions_require_confirmation = true
