@@ -4,6 +4,11 @@ data_dir = "data"
 [source]
 type = "dingtalk-cli"
 command = "dws.cmd"
+group_id = ""
+bot_name = ""
+fetch_limit = 200
+history_limit = 80
+lookback_minutes = 1440
 
 [executor]
 type = "codex-cli"

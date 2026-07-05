@@ -318,3 +318,23 @@ Commercial use and derivative works are allowed. When redistributing GroupMate
 or substantial portions of it, including modified versions, retain the copyright
 notice and license text as required by the MIT License. See [NOTICE](NOTICE) for
 the original project attribution.
+
+## Quick Start (Milestone 1)
+
+```bash
+npm install
+npm run build
+node dist/cli.js doctor
+node dist/cli.js simulate --channel cid-test --sender user-1 --sender-name Alice --text "Summarize the current issue"
+node dist/cli.js codex-smoke "Reply with ok only"
+```
+
+DingTalk one-shot:
+
+```powershell
+$env:GROUPMATE_DINGTALK_GROUP_ID="cid..."
+$env:GROUPMATE_DINGTALK_BOT_NAME="ducf_agent"
+node dist/cli.js dingtalk-custom "start checking and tell me the result"
+```
+
+See [examples/dingtalk-codex/README.zh-CN.md](examples/dingtalk-codex/README.zh-CN.md) for the full walkthrough.

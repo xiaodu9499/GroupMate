@@ -1,0 +1,29 @@
+{
+  "workspace": {
+    "dataDir": "data"
+  },
+  "source": {
+    "type": "dingtalk-cli",
+    "command": "dws.cmd",
+    "groupId": "",
+    "botName": "",
+    "fetchLimit": 200,
+    "historyLimit": 80,
+    "lookbackMinutes": 1440
+  },
+  "executor": {
+    "type": "codex-cli",
+    "command": "codex.cmd",
+    "timeoutMs": 120000
+  },
+  "permissions": {
+    "owners": [],
+    "writers": [],
+    "defaultMode": "ask"
+  },
+  "execution": {
+    "askSandbox": "read-only",
+    "writeSandbox": "workspace-write",
+    "dangerousActionsRequireConfirmation": true
+  }
+}
